@@ -1,0 +1,44 @@
+name: WorkoutTracking Build and Test
+
+on: 
+    pull_request:
+        branches: [ main, develop ]
+
+jobs:
+    build: 
+        runs-on: ubuntu-latest
+        strategy: 
+            matrix: 
+                dotnet-version: [8.x]
+                working-directory: [ 'WorkoutTracking' ]
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup dotnet ${{ matrix.dotnet-version }}
+              uses: actions/setup-dotnet@v3
+              with:
+                dotnet-version: ${{ matrix.dotnet-version }}
+            - name: Install dependencies
+              run: dotnet restore 
+              working-directory: ${{ matrix.working-directory }}
+            - name: Build application
+              run: dotnet build
+              working-directory: ${{ matrix.working-directory }}
+
+    test: 
+        runs-on: [ ubuntu-latest ]
+        strategy: 
+            matrix: 
+                dotnet-version: [ '8.x' ]
+                working-directory: [ 'WorkoutTracking' ]
+
+        steps: 
+            - uses: actions/checkout@v4
+            - name: Setup dotnet ${{ matrix.dotnet-version }}
+              uses: actions/setup-dotnet@v3
+              with:
+                dotnet-version: ${{ matrix.dotnet-version }}
+            - name: Test with the dotnet CLI
+              run: dotnet test
+              working-directory: ${{ matrix.working-directory }}
+
