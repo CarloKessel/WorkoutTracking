@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  workouttracking-api:
+    build:
+      context: ./WorkoutTracking/WorkoutService
+    ports:
+      - "8081:8081"
+    networks:
+      - workouttracking-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    container_name: workouttracking-api
+
+  workouttracking-frontend:
+    build:
+      context: ./Frontend/workouttracking-frontend
+    ports:
+      - "8080:8080"
+    networks:
+      - workouttracking-network
+    container_name: workouttracking-frontend
+
+networks:
+  workouttracking-network:
+    driver: bridge
