@@ -1,12 +1,27 @@
 ﻿using FastEndpoints;
 using WorkoutService.Commands.Post;
+using WorkoutService.Interfaces;
+using WorkoutService.Models;
 
 namespace WorkoutService.Handlers.Post;
 
 public class AddNewWorkoutCommandHandler : CommandHandler<AddNewWorkoutCommand, AddNewWorkoutResponse>
 {
-    public override Task<AddNewWorkoutResponse> ExecuteAsync(AddNewWorkoutCommand command, CancellationToken cancellationToken)
+    private readonly IWorkoutRepository _workoutRepository;
+    public AddNewWorkoutCommandHandler(IWorkoutRepository workoutRepository)
     {
-        throw new NotImplementedException();
+        _workoutRepository = workoutRepository;
+    }
+
+    public override async Task<AddNewWorkoutResponse> ExecuteAsync(AddNewWorkoutCommand command, CancellationToken cancellationToken)
+    {
+        var workout = new Workout()
+        {
+            Name = command.Name
+        };
+
+        var storedWorkoutId = await _workoutRepository.CreateWorkout(workout, cancellationToken);
+
+        return new AddNewWorkoutResponse(storedWorkoutId);
     }
 }
