@@ -38,7 +38,6 @@ export default {
         };
 
         // await axios.post(`${process.env.API_GATEWAY_URL}/workouts/` + this.form.name + `/` + this.$keycloak.profile.email, {}, config)
-        // await axios.post(`${process.env.API_GATEWAY_URL}/workouts/`, {name: this.form.name}, config)
         await axios.post(`${process.env.VUE_APP_BACK_END_API_URL}/workout`, {name: this.form.name}, config)
             .then(async (res) => {
               this.form.name = '';

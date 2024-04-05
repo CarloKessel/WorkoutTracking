@@ -1,26 +1,51 @@
 version: '3.8'
 
+networks:
+  workouttracking-network:
+    driver: bridge
+
 services:
-  workouttracking-api:
+  app_db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: WorkoutTracking
+      POSTGRES_PASSWORD: d7yB3Dftse9gce46PoaB9ck7
+      POSTGRES_DB: WorkoutTracking
+    networks:
+      - workouttracking-network
+    container_name: app_db
+
+  frontend:
+    image: docker.io/library/workouttracking_frontend:latest
+    build:
+      context: ./Frontend/workouttracking-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - workouttracking-network
+    container_name: frontend
+    volumes:
+      - ./Frontend/workouttracking-frontend:/app
+
+  workoutservice:
+    image: docker.io/library/workouttracking_workoutservice:latest
+    restart: always
+    depends_on:
+      - app_db
     build:
       context: ./WorkoutTracking/WorkoutService
+      dockerfile: Dockerfile
     ports:
       - "8081:8081"
     networks:
       - workouttracking-network
     environment:
+      - Database__DatabasConnectionString=Server=app_db;port=5432;Database=WorkoutTracking;User Id=WorkoutTracking;Password=d7yB3Dftse9gce46PoaB9ck7;
+      - Frontend__FrontendUrl=http://127.0.0.1:8080
+      - ASPNETCORE_URLS=http://*:8081
       - ASPNETCORE_ENVIRONMENT=Development
-    container_name: workouttracking-api
-
-  workouttracking-frontend:
-    build:
-      context: ./Frontend/workouttracking-frontend
-    ports:
-      - "8080:8080"
-    networks:
-      - workouttracking-network
-    container_name: workouttracking-frontend
-
-networks:
-  workouttracking-network:
-    driver: bridge
+    container_name: workoutservice
