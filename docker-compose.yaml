@@ -19,7 +19,7 @@ services:
     container_name: app_db
 
   frontend:
-    image: docker.io/library/frontend:latest
+    image: docker.io/library/workouttracking_frontend:latest
     build:
       context: ./Frontend/workouttracking-frontend
       dockerfile: Dockerfile
@@ -32,7 +32,7 @@ services:
       - ./Frontend/workouttracking-frontend:/app
 
   workoutservice:
-    image: docker.io/library/api:latest
+    image: docker.io/library/workouttracking_workoutservice:latest
     restart: always
     depends_on:
       - app_db
