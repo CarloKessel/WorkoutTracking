@@ -16,11 +16,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-    - name: Go to frontend
-      run: cd Frontend/workouttracking-frontend
     - name: Build the frontend Docker image
+      working-directory: ./Frontend/workouttracking-frontend
       run: docker build -t workouttracking_frontend .
     - name: Add tag to image
-      run: docker tag workouttracking_frontend &{{ secrets.DOCKERHUB_USERNAME }}/workouttracking_frontend
+      run: docker tag workouttracking_frontend ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_frontend
     - name: Push to Doecker Hub
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_frontend:latest
