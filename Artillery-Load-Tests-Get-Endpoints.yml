@@ -1,6 +1,6 @@
 config:
   # It's designed to be highly scalable
-  target: http://workoutservice:8081
+  target: http://172.18.0.4:8081
   phases:
     - duration: 10
       arrivalRate: 1
