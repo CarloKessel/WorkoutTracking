@@ -20,4 +20,14 @@ public class WorkoutRepository : IWorkoutRepository
         await session.SaveChangesAsync();
         return workout.Id;
     }
+
+    public async Task<Workout> GetWorkoutById(Guid workoutId, CancellationToken cancellationToken)
+    {
+        await using var session = _store.QuerySession();
+        Console.WriteLine(workoutId.ToString());
+        var workout = session.Load<Workout>(workoutId);
+        Console.WriteLine(workout.Id.ToString());
+        Console.WriteLine(workout.Name);
+        return workout ?? throw new Exception("Did not find workout.");
+    }
 }

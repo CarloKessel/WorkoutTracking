@@ -1,0 +1,27 @@
+name: WorkoutTracking Unit Tests
+
+on: 
+    workflow_call:
+
+jobs:
+    load-tests: 
+        runs-on: [ ubuntu-latest ]
+
+        steps: 
+            - uses: actions/checkout@v4
+            - name: Build and Deploy Docker Containers
+              working-directory: ./
+              run: |
+                docker-compose build
+                docker-compose up -d
+
+            - name: Execute load tests
+              uses: artilleryio/action-cli@v1
+              with:
+                command: run ./Artillery-Load-Tests-Get-Endpoints.yml
+
+            - name: Archive Test Results
+              uses: actions/upload-artifact@v2
+              with:
+                name: load-test-results
+                path: artillery_report.json
