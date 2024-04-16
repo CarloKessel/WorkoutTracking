@@ -12,6 +12,6 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var query = new GetAllWorkouts
+        throw new NotImplementedException();
     }
 }
