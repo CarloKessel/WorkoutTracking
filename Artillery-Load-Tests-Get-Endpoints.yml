@@ -20,4 +20,6 @@ scenarios:
       - loop:
         - get:
             url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b244"
+        - get:
+            url: ""
         count: 100
