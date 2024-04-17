@@ -10,18 +10,13 @@ jobs:
         steps: 
             - uses: actions/checkout@v4
             - name: Start containers
-              run: docker-compose -f docker-compose.yaml up -d --build
+              run: docker-compose up -d
 
-            - name: Wait for services to start
-              run: sleep 30s
-
-            - run: docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' workoutservice
-
-            - name: Execute load tests
-              uses: artilleryio/action-cli@v1
-              with:
-                command: run ./Artillery-Load-Tests-Get-Endpoints.yml
+            - name: Install Artillery
+              run: npm install -g artillery
+      
+            - name: Run Load Test
+              run: artillery run Artillery-Load-Tests-Get-Endpoints.yml
             
             - name: Stop containers
-              if: always()
-              run: docker-compose -f docker-compose.yaml down
+              run: docker-compose down

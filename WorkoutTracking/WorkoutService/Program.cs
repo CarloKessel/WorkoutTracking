@@ -16,8 +16,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.AllowAnyHeader().AllowAnyMethod();
-            policy.AllowAnyOrigin();
-            //policy.WithOrigins(builder.Configuration.GetSection("Frontend")["FrontendUrl"]!);
+            policy.WithOrigins(builder.Configuration.GetSection("Frontend")["FrontendUrl"]!);
         });
 });
 
