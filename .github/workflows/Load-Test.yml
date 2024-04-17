@@ -1,0 +1,22 @@
+name: WorkoutTracking Load Tests
+
+on: 
+    workflow_call:
+
+jobs:
+    load-tests: 
+        runs-on: [ ubuntu-latest ]
+
+        steps: 
+            - uses: actions/checkout@v4
+            - name: Start containers
+              run: docker-compose up -d
+
+            - name: Install Artillery
+              run: npm install -g artillery
+      
+            - name: Run Load Test
+              run: artillery run Artillery-Load-Tests-Get-Endpoints.yml
+            
+            - name: Stop containers
+              run: docker-compose down

@@ -32,7 +32,8 @@ export default {
       if (this.formIsValid) {
         const config = {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
             // 'Authorization': 'Bearer ' + localStorage.getItem("vue-token")
           }
         };

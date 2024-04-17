@@ -12,12 +12,12 @@ builder.Services
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", bld =>
-    {
-        bld.WithOrigins(builder.Configuration.GetSection("Frontend")["FrontendUrl"]!) // Adjust this to your frontend URL
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
+    options.AddPolicy("AllowFrontend", 
+        policy =>
+        {
+            policy.AllowAnyHeader().AllowAnyMethod();
+            policy.WithOrigins(builder.Configuration.GetSection("Frontend")["FrontendUrl"]!);
+        });
 });
 
 Console.WriteLine(builder.Configuration.GetSection("Frontend")["FrontendUrl"]);

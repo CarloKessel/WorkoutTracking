@@ -1,5 +1,6 @@
 ﻿using Marten;
 using Weasel.Core;
+using WorkoutService.MartenConfiguration;
 
 namespace WorkoutService.Extensions;
 
@@ -16,7 +17,7 @@ public static class MartenCollectionExtension
             }
 
             options.UseDefaultSerialization(EnumStorage.AsString);
-        }).ApplyAllDatabaseChangesOnStartup();
+        }).InitializeWith(new InitialData(InitialDatasets.workouts));
 
         return services;
     }

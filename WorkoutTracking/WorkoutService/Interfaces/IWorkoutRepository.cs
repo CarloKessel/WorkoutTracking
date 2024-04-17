@@ -5,4 +5,5 @@ namespace WorkoutService.Interfaces;
 public interface IWorkoutRepository
 {
     public Task<Guid> CreateWorkout(Workout workout, CancellationToken cancellationToken);
+    public Task<Workout> GetWorkoutById(Guid workoutId, CancellationToken cancellationToken);
 }

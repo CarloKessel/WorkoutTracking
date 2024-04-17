@@ -2,5 +2,5 @@
 
 public class Request
 {
-    public required Guid Id { get; set; }
+    public required Guid WorkoutId { get; set; }
 }
