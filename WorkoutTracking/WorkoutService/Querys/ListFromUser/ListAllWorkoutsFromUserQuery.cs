@@ -3,5 +3,5 @@
 namespace WorkoutService.Querys.ListFromUser;
 
 public record ListAllWorkoutsFromUserQuery(
-    Guid UserId
+    string UserEmail
     ) : ICommand<ListAllWorkoutsFromUserResponse>;

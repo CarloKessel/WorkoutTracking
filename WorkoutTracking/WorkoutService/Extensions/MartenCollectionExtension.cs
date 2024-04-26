@@ -16,7 +16,7 @@ public static class MartenCollectionExtension
                 options.AutoCreateSchemaObjects = AutoCreate.All;
             }
 
-            options.UseDefaultSerialization(EnumStorage.AsString);
+            options.UseSystemTextJsonForSerialization(EnumStorage.AsString);
         }).InitializeWith(new InitialData(InitialDatasets.workouts));
 
         return services;

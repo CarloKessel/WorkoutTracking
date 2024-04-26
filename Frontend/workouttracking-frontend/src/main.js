@@ -9,12 +9,13 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 const app = createApp(App);
 app.use(
     createAuth0({
-      domain: "dev-vvr65zntgft7vbt4.us.auth0.com",
-      clientId: "qKzrAnxuI5xqCPpgT4ZGPO7Jn3IpVpE8",
+      domain: process.env.VUE_APP_AUTH0_DOMAIN,
+      clientId: process.env.VUE_APP_AUTH0_CLIENT_ID,
       useRefreshTokens: true,
       cacheLocation: "localstorage",
       authorizationParams: {
-        redirect_uri: window.location.origin
+        redirect_uri: window.location.origin,
+        audience: process.env.VUE_APP_WORKOUT_SERVICE,
       }
     })
 );

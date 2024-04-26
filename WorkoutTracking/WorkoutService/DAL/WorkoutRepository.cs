@@ -28,10 +28,10 @@ public class WorkoutRepository : IWorkoutRepository
         return workout ?? throw new Exception("Did not find workout.");
     }
 
-    public async Task<List<Workout>> ListAllWorkoutsFromUserId(Guid userId, CancellationToken cancellationToken)
+    public async Task<List<Workout>> ListAllWorkoutsFromUserId(string UserEmail, CancellationToken cancellationToken)
     {
         await using var session = _store.QuerySession();
-        var workouts = session.Query<Workout>().Where(x => x.UserId == userId).ToList();
+        var workouts = session.Query<Workout>().Where(x => x.UserEmail == UserEmail).ToList();
         return workouts ?? throw new Exception("Did not find User workouts.");
     }
 }

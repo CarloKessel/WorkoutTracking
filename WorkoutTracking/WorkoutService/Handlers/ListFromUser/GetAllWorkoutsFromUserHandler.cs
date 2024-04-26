@@ -19,7 +19,7 @@ public class GetAllWorkoutsFromUserHandler : CommandHandler<ListAllWorkoutsFromU
         List<Workout> workouts = new();
         try
         {
-            workouts = await _workoutRepository.ListAllWorkoutsFromUserId(command.UserId, cancellationToken);
+            workouts = await _workoutRepository.ListAllWorkoutsFromUserId(command.UserEmail, cancellationToken);
         }
         catch (Exception ex)
         {
