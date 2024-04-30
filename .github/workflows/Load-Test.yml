@@ -16,6 +16,8 @@ jobs:
               run: npm install -g artillery
       
             - name: Run Load Test
+              env:
+                AUTH_TEST_TOKEN: ${{ secrets.AUTH_TEST_TOKEN }}
               run: artillery run Artillery-Load-Tests-Get-Endpoints.yml
             
             - name: Stop containers
