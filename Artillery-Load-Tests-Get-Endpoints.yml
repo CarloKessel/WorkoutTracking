@@ -14,12 +14,13 @@ config:
       arrivalRate: 10
       rampTo: 30
       name: Spike phase
+  defaults:
+    headers:
+      Authorization: Bearer ${{ secrets.AUTH0_TEST_BEARER }}
 
 scenarios: 
   - flow:
       - loop:
         - get:
             url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b244"
-            headers:
-              Authorization: Bearer ${{ secrets.AUTH0_TEST_BEARER }}
         count: 100
