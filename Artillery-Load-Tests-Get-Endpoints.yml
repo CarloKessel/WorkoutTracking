@@ -16,7 +16,7 @@ config:
       name: Spike phase
   defaults:
     headers:
-      Authorization: Bearer {{ process.env.AUTH_TEST_TOKEN }}
+      Authorization: Bearer AUTH_TOKEN
 
 scenarios: 
   - flow:

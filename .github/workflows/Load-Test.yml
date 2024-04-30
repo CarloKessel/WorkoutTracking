@@ -15,9 +15,13 @@ jobs:
             - name: Install Artillery
               run: npm install -g artillery
       
+            # Run the Node.js script to inject the secret
+            - name: Inject Secret into Artillery YAML
+              run: |
+                npm install
+                node inject-secret.js
+
             - name: Run Load Test
-              env:
-                AUTH_TEST_TOKEN: ${{ secrets.AUTH_TEST_TOKEN }}
               run: artillery run Artillery-Load-Tests-Get-Endpoints.yml
             
             - name: Stop containers
