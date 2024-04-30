@@ -14,10 +14,6 @@ jobs:
 
             - name: Install Artillery
               run: npm install -g artillery
-      
-            # Run the Node.js script to inject the secret
-            - name: Inject Secret into Artillery YAML
-              run: node inject-secret.js
 
             - name: Run Load Test
               run: artillery run Artillery-Load-Tests-Get-Endpoints.yml
