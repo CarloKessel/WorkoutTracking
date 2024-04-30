@@ -16,7 +16,9 @@ config:
       name: Spike phase
   defaults:
     headers:
-      Authorization: Bearer AUTH_TOKEN
+      Authorization: "Bearer AUTH_TOKEN"
+  reporters:
+    - log
 
 scenarios: 
   - flow:
