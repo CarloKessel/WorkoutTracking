@@ -8,7 +8,7 @@ public class Endpoint : Endpoint<Request, Response>
     public override void Configure()
     {
         Get("/workout/{WorkoutId}");
-        AllowAnonymous();
+        Permissions("read:workouts");
     }
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)

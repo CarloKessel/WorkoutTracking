@@ -1,15 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
-  // devServer: {
-  //   proxy: {
-  //     '/api': {
-  //       target: `${process.env.VUE_APP_BACK_END_API_URL}`, // Assuming your backend runs on port 8081
-  //       ws: true,
-  //       changeOrigin: true,
-  //     }
-  //   }
-  // },
   pwa: {
     name: "Workout Tracking",
     display: "fullscreen",

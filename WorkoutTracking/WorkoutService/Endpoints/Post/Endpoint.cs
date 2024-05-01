@@ -8,12 +8,12 @@ public class Endpoint : Endpoint<Request, Response>
     public override void Configure()
     {
         Post("/workout");
-        AllowAnonymous();
+        Permissions("add:workout");
     }
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
-        var command = new AddNewWorkoutCommand(request.Name);
+        var command = new AddNewWorkoutCommand(request.UserEmail, request.Name);
         var result = await command.ExecuteAsync(cancellationToken);
 
         await SendCreatedAtAsync<Get.Endpoint>(result.WorkoutId, new Response() { Id = result.WorkoutId }, cancellation: cancellationToken);

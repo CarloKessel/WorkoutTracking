@@ -7,6 +7,10 @@ on:
 jobs:
     load-tests:
       uses: ./.github/workflows/Load-Test.yml
+      secrets:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        AUTH_TEST_TOKEN: ${{ secrets.AUTH_TEST_TOKEN }}
 
     unit-tests: 
         uses: ./.github/workflows/Unit-Test.yml

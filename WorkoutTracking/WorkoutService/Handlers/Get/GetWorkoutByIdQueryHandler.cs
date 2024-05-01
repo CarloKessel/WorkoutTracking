@@ -13,6 +13,7 @@ public class GetWorkoutByIdQueryHandler : CommandHandler<GetWorkoutByIdQuery, Ge
     {
         _workoutRepository = workoutRepository;
     }
+
     public override async Task<GetWorkoutByIdResponse> ExecuteAsync(GetWorkoutByIdQuery command, CancellationToken cancellationToken = default)
     {
         Workout workout = new();

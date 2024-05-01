@@ -19,10 +19,10 @@ services:
     container_name: app_db
 
   frontend:
-    image: docker.io/library/workouttracking_frontend:latest
-    build:
-      context: ./Frontend/workouttracking-frontend
-      dockerfile: Dockerfile
+    image: carlovankessel/workouttracking_frontend:latest
+    # build:
+    #   context: ./Frontend/workouttracking-frontend
+    #   dockerfile: Dockerfile
     ports:
       - "8080:8080"
     networks:
@@ -32,13 +32,13 @@ services:
       - ./Frontend/workouttracking-frontend:/app
 
   workoutservice:
-    image: docker.io/library/workouttracking_workoutservice:latest
+    image: carlovankessel/workouttracking_workoutservice:latest
     restart: always
     depends_on:
       - app_db
-    build:
-      context: ./WorkoutTracking/WorkoutService
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./WorkoutTracking/WorkoutService
+    #   dockerfile: Dockerfile
     ports:
       - "8081:8081"
     networks:

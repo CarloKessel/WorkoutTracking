@@ -1,6 +1,6 @@
 config:
   # It's designed to be highly scalable
-  target: http://127.0.0.1:8081
+  target: '{{ baseUrl }}'
   phases:
     - duration: 60
       arrivalRate: 1
@@ -14,10 +14,17 @@ config:
       arrivalRate: 10
       rampTo: 30
       name: Spike phase
+  defaults:
+    headers:
+      Authorization: 'Bearer {{ authTestToken }}'
 
 scenarios: 
   - flow:
       - loop:
         - get:
-            url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b244"
+            url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b244" # Good case 200 response
+        - get:
+            url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b241" # Bad case 404 response
+        - get:
+            url: "/workout/push" # Bad case 400 response
         count: 100

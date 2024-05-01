@@ -2,5 +2,6 @@
 
 public class Request
 {
-    public string Name { get; set; } = string.Empty;
+    public required string UserEmail { get; set; }
+    public required string Name { get; set; }
 }
