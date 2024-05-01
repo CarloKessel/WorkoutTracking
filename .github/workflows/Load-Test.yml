@@ -16,9 +16,8 @@ jobs:
               run: npm install -g artillery
 
             - name: Run Load Test
-              env:
-                AUTH_TEST_TOKEN: ${{ secrets.AUTH_TEST_TOKEN }}
-              run: /home/node/artillery/bin/run run Artillery-Load-Tests-Get-Endpoints.yml
-            
+              run: |
+                artillery run --variables > '{"baseUrl": "http://127.0.0.1:8081", "authTestToken": "${{ secrets.AUTH_TEST_TOKEN }}"}' > Artillery-Load-Tests-Get-Endpoints.yml
+
             - name: Stop containers
               run: docker-compose down

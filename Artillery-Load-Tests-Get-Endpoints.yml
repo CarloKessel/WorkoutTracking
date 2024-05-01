@@ -1,6 +1,6 @@
 config:
   # It's designed to be highly scalable
-  target: http://127.0.0.1:8081
+  target: '{{ baseUrl }}'
   phases:
     - duration: 60
       arrivalRate: 1
@@ -16,7 +16,7 @@ config:
       name: Spike phase
   defaults:
     headers:
-      Authorization: "Bearer {{ $processEnvironment.AUTH_TEST_TOKEN }}"
+      Authorization: 'Bearer {{ authTestToken }}'
 
 scenarios: 
   - flow:
