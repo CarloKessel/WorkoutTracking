@@ -20,9 +20,9 @@ services:
 
   frontend:
     image: docker.io/library/workouttracking_frontend:latest
-    build:
-      context: ./Frontend/workouttracking-frontend
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./Frontend/workouttracking-frontend
+    #   dockerfile: Dockerfile
     ports:
       - "8080:8080"
     networks:
@@ -36,9 +36,9 @@ services:
     restart: always
     depends_on:
       - app_db
-    build:
-      context: ./WorkoutTracking/WorkoutService
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./WorkoutTracking/WorkoutService
+    #   dockerfile: Dockerfile
     ports:
       - "8081:8081"
     networks:
