@@ -17,8 +17,8 @@ jobs:
 
             - name: Run Load Test
               env:
-                AUTH_TEST_TOKEN: "${{ secrets.AUTH_TEST_TOKEN }}"
-              run: artillery run Artillery-Load-Tests-Get-Endpoints.yml
+                AUTH_TEST_TOKEN: ${{ secrets.AUTH_TEST_TOKEN }}
+              run: /home/node/artillery/bin/run run Artillery-Load-Tests-Get-Endpoints.yml
             
             - name: Stop containers
               run: docker-compose down
