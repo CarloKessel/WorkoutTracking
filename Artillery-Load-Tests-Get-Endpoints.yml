@@ -16,11 +16,15 @@ config:
       name: Spike phase
   defaults:
     headers:
-      Authorization: "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IklDZGp2QmF6RU9KWGYyMGw1cmtPTyJ9.eyJpc3MiOiJodHRwczovL2Rldi12dnI2NXpudGdmdDd2YnQ0LnVzLmF1dGgwLmNvbS8iLCJzdWIiOiI4YThUMDNUcGJEM1VRVU1GRlYyb1dTM0R4R3FlM1dBVUBjbGllbnRzIiwiYXVkIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgxIiwiaWF0IjoxNzE0NDg0MDQ0LCJleHAiOjE3MTQ0OTEyNDQsInNjb3BlIjoiYWRkOndvcmtvdXQgcmVhZDp3b3Jrb3V0cyIsImd0eSI6ImNsaWVudC1jcmVkZW50aWFscyIsImF6cCI6IjhhOFQwM1RwYkQzVVFVTUZGVjJvV1MzRHhHcWUzV0FVIiwicGVybWlzc2lvbnMiOlsiYWRkOndvcmtvdXQiLCJyZWFkOndvcmtvdXRzIl19.au5A-j3tyLARN-rM6ft2jSXHvLbWUWjRJ125e-Nxfl5sC18nTsR8JCRg8-3oHk0Ww1PuuwMt0JbGf3iSnEoP8FMfF7zHOqZFEvMjxg87YV6qW4gJbG6Q6de4riyTMClBn-HVHW7tOZ3LQRE7bbnTDgXOJVRBHEEL-01v-qx9WIzQ0tpoBfox5G3_uKifyTEm34nNvJRHrCk9PXyHpAT0wnAGF74_NZ7ibsMUNr4eMqnMzstyjYZRqJ81q-HtRMdjRAkOftdANCUEC-xAKSWDl4YBjwru5XZmKSZyO1DpriCoPrgHOtHSYC-xfv52fE2_-48_cryKfaTTmoauY-PflQ"
+      Authorization: "Bearer {{ $processEnvironment.AUTH_TEST_TOKEN }}"
 
 scenarios: 
   - flow:
       - loop:
         - get:
-            url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b244"
+            url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b244" # Good case 200 response
+        - get:
+            url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b241" # Bad case 404 response
+        - get:
+            url: "/workout/push" # Bad case 400 response
         count: 100
