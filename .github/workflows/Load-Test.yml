@@ -1,30 +1,29 @@
 name: WorkoutTracking Load Tests
 
 on: 
-    workflow_call:
+  workflow_call:
 
 jobs:
-    load-tests: 
-        runs-on: [ ubuntu-latest ]
+  load-tests: 
+    runs-on: [ ubuntu-latest ]
+    steps: 
+    - uses: actions/checkout@v4
 
-        steps: 
-            - uses: actions/checkout@v4
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-            - name: Log in to Docker Hub
-              uses: docker/login-action@v3
-              with:
-                username: ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    - name: Start containers
+      run: docker-compose up -d
 
-            - name: Start containers
-              run: docker-compose up -d
+    - name: Install Artillery
+      run: npm install -g artillery
 
-            - name: Install Artillery
-              run: npm install -g artillery
+    - name: Run Load Test
+      run: |
+        artillery run --variables "{\"baseUrl\": \"http://127.0.0.1:8081\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\"}" Artillery-Load-Tests-Get-Endpoints.yml
 
-            - name: Run Load Test
-              run: |
-                artillery run --variables "{\"baseUrl\": \"http://127.0.0.1:8081\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\"}" Artillery-Load-Tests-Get-Endpoints.yml
-
-            - name: Stop containers
-              run: docker-compose down
+    - name: Stop containers
+      run: docker-compose down
