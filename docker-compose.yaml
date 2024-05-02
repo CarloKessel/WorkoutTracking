@@ -31,8 +31,8 @@ services:
     volumes:
       - ./Frontend/workouttracking-frontend:/app
 
-  workoutservice:
-    image: carlovankessel/workouttracking_workoutservice:latest
+  readservice:
+    image: carlovankessel/workouttracking_readservice:latest
     restart: always
     depends_on:
       - app_db
@@ -48,4 +48,4 @@ services:
       - Frontend__FrontendUrl=http://127.0.0.1:8080
       - ASPNETCORE_URLS=http://*:8081
       - ASPNETCORE_ENVIRONMENT=Development
-    container_name: workoutservice
+    container_name: readservice
