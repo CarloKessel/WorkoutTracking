@@ -29,9 +29,9 @@ services:
 
   frontend:
     image: carlovankessel/workouttracking_frontend:latest
-    build:
-      context: ./Frontend/workouttracking-frontend
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./Frontend/workouttracking-frontend
+    #   dockerfile: Dockerfile
     ports:
       - "8080:8080"
     networks:
@@ -43,9 +43,9 @@ services:
   apigateway:
     image: carlovankessel/workouttracking_apigateway:latest
     restart: always
-    build:
-      context: ./Gateways/APIGateway/APIGateway
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./Gateways/APIGateway/APIGateway
+    #   dockerfile: Dockerfile
     ports:
       - "5001:5001"
     environment:
@@ -61,9 +61,9 @@ services:
     restart: always
     depends_on:
       - readdatabase
-    build:
-      context: ./Services/ReadService/API
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./Services/ReadService/API
+    #   dockerfile: Dockerfile
     ports:
       - "5101:5101"
     networks:
@@ -80,9 +80,9 @@ services:
     restart: always
     depends_on:
       - writedatabase
-    build:
-      context: ./Services/WriteService/API
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./Services/WriteService/API
+    #   dockerfile: Dockerfile
     ports:
       - "5201:5201"
     networks:
