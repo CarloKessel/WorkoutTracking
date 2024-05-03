@@ -15,7 +15,7 @@ app.use(
       cacheLocation: "localstorage",
       authorizationParams: {
         redirect_uri: window.location.origin,
-        audience: process.env.VUE_APP_WORKOUT_SERVICE,
+        audience: process.env.VUE_APP_API_GATEWAY,
       }
     })
 );

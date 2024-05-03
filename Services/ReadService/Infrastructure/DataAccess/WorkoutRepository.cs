@@ -16,16 +16,13 @@ public class WorkoutRepository : IWorkoutRepository
 
     public async Task<Workout> GetWorkoutById(int workoutId, CancellationToken cancellationToken)
     {
-        //_context.Workouts.Add(new Workout { Name = "PPl" });
-        //_context.SaveChanges();
-
         var workout = await _context.Workouts.FindAsync(workoutId, cancellationToken);
         return workout ?? throw new Exception("Did not find workout.");
     }
 
     public async Task<List<Workout>> ListAllWorkoutsFromUserId(string UserEmail, CancellationToken cancellationToken)
     {
-        var workouts = await _context.Workouts.Where(p => p.UserEmail == UserEmail).ToListAsync();
+        var workouts = await _context.Workouts.Where(p => p.UserEmail == UserEmail).ToListAsync(cancellationToken);
         return workouts;
     }
 }

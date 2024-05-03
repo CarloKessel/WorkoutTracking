@@ -12,10 +12,10 @@ builder.Services
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("AllowAPIGateway", policy =>
     {
         policy.AllowAnyHeader().AllowAnyMethod();
-        policy.WithOrigins(builder.Configuration.GetSection("Frontend")["FrontendUrl"]!);
+        policy.WithOrigins(builder.Configuration.GetSection("APIGateway")["APIGatewayUrl"]!);
     });
 });
 
@@ -24,7 +24,7 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseCors("AllowFrontend")
+app.UseCors("AllowAPIGateway")
     .UseFastEndpoints()
     .UseSwaggerGen();
 

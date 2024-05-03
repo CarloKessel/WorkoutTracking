@@ -12,7 +12,7 @@ public static class ServiceCollectionExtension
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, bool isDevelopment)
     {
         services.AddDbContext<WTContext>(options =>
-            options.UseNpgsql(configuration.GetSection("Database")["DatabasConnectionString"]));
+            options.UseNpgsql(configuration.GetSection("Database")["DatabasConnectionString"]!));
 
         // Apply migrations during application startup
         using (var serviceProvider = services.BuildServiceProvider())
