@@ -21,9 +21,9 @@ scenarios:
   - flow:
       - loop:
         - get:
-            url: "/write-api/workout/1" # Good case 200 response
+            url: "/read-api/workout/1" # Good case 200 response
         - get:
-            url: "/write-api/workout/2" # Bad case 404 response
+            url: "/read-api/workout/2" # Bad case 404 response
         - get:
-            url: "/write-api/workout/push" # Bad case 400 response
+            url: "/read-api/workout/push" # Bad case 400 response
         count: 10

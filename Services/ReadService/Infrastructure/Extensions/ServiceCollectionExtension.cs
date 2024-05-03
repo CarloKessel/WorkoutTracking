@@ -22,6 +22,8 @@ public static class ServiceCollectionExtension
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
                 context.Database.Migrate();
+                string sql = "INSERT INTO \"Workouts\" (\"Id\", \"UserEmail\", \"Name\", \"Type\", \"DateCreated\") VALUES (1, 'test@gmail.com', 'PPL', 0, '" + DateTime.UtcNow.ToString() + "');";
+                context.Database.ExecuteSqlRaw(sql);
             }
         }
 
