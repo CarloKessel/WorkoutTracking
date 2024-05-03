@@ -1,22 +1,31 @@
 version: '3.8'
 
-networks:
-  workouttracking-network:
-    driver: bridge
-
 services:
-  app_db:
+  readdatabase:
     image: postgres
     restart: always
     ports:
-      - "5432:5432"
+      - "5440:5432"
     environment:
-      POSTGRES_USER: WorkoutTracking
+      POSTGRES_USER: read
       POSTGRES_PASSWORD: d7yB3Dftse9gce46PoaB9ck7
       POSTGRES_DB: WorkoutTracking
     networks:
       - workouttracking-network
-    container_name: app_db
+    container_name: readdatabase
+
+  writedatabase:
+    image: postgres
+    restart: always
+    ports:
+      - "5441:5432"
+    environment:
+      POSTGRES_USER: write
+      POSTGRES_PASSWORD: d7yB3Dftse9gce46PoaB9ck8
+      POSTGRES_DB: WorkoutTracking
+    networks:
+      - workouttracking-network
+    container_name: writedatabase
 
   frontend:
     image: carlovankessel/workouttracking_frontend:latest
@@ -31,21 +40,61 @@ services:
     volumes:
       - ./Frontend/workouttracking-frontend:/app
 
-  workoutservice:
-    image: carlovankessel/workouttracking_workoutservice:latest
+  apigateway:
+    image: carlovankessel/workouttracking_apigateway:latest
     restart: always
-    depends_on:
-      - app_db
     # build:
-    #   context: ./WorkoutTracking/WorkoutService
+    #   context: ./Gateways/APIGateway/APIGateway
     #   dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "5001:5001"
+    environment:
+      - Frontend__FrontendUrl=http://127.0.0.1:8080
+      - ASPNETCORE_URLS=http://*:5001
+    networks:
+      - workouttracking-network
+    container_name: apigateway
+
+
+  readservice:
+    image: carlovankessel/workouttracking_readservice:latest
+    restart: always
+    depends_on:
+      - readdatabase
+    # build:
+    #   context: ./Services/ReadService/API
+    #   dockerfile: Dockerfile
+    ports:
+      - "5101:5101"
     networks:
       - workouttracking-network
     environment:
-      - Database__DatabasConnectionString=Server=app_db;port=5432;Database=WorkoutTracking;User Id=WorkoutTracking;Password=d7yB3Dftse9gce46PoaB9ck7;
-      - Frontend__FrontendUrl=http://127.0.0.1:8080
-      - ASPNETCORE_URLS=http://*:8081
+      - Database__DatabasConnectionString=Server=readdatabase;port=5432;Database=WorkoutTracking;User Id=read;Password=d7yB3Dftse9gce46PoaB9ck7;
+      - APIGateway__APIGatewayUrl=http://apigateway:5001
+      - ASPNETCORE_URLS=http://*:5101
       - ASPNETCORE_ENVIRONMENT=Development
-    container_name: workoutservice
+    container_name: readservice
+
+  writeservice:
+    image: carlovankessel/workouttracking_writeservice:latest
+    restart: always
+    depends_on:
+      - writedatabase
+    # build:
+    #   context: ./Services/WriteService/API
+    #   dockerfile: Dockerfile
+    ports:
+      - "5201:5201"
+    networks:
+      - workouttracking-network
+    environment:
+      - Database__DatabasConnectionString=Server=writedatabase;port=5432;Database=WorkoutTracking;User Id=write;Password=d7yB3Dftse9gce46PoaB9ck8;
+      - APIGateway__APIGatewayUrl=http://apigateway:5001
+      - ASPNETCORE_URLS=http://*:5201
+      - ASPNETCORE_ENVIRONMENT=Development
+    container_name: writeservice
+
+networks:
+  workouttracking-network:
+    name: workouttracking-network
+    driver: bridge
