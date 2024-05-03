@@ -30,7 +30,7 @@ jobs:
 
     - name: Run Load Test
       run: |
-        artillery run --variables "{\"baseUrl\": \"http://127.0.0.1:8081\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\"}" Artillery-Load-Tests-Get-Endpoints.yml
+        artillery run --variables "{\"baseUrl\": \"http://127.0.0.1:5001\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\"}" Artillery-Load-Tests-Get-Endpoints.yml
 
     - name: Stop containers
       run: docker-compose down

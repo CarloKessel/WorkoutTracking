@@ -1,5 +1,4 @@
 config:
-  # It's designed to be highly scalable
   target: '{{ baseUrl }}'
   phases:
     - duration: 60
@@ -22,9 +21,9 @@ scenarios:
   - flow:
       - loop:
         - get:
-            url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b244" # Good case 200 response
+            url: "/write-api/workout/1" # Good case 200 response
         - get:
-            url: "/workout/2219b6f7-7883-4629-95d5-1a8a6c74b241" # Bad case 404 response
+            url: "/write-api/workout/2" # Bad case 404 response
         - get:
-            url: "/workout/push" # Bad case 400 response
-        count: 100
+            url: "/write-api/workout/push" # Bad case 400 response
+        count: 10

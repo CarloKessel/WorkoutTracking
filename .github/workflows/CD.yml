@@ -19,20 +19,26 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    - name: Build and tag frontend Docker image
+    - name: Build, tag and push frontend Docker image
       run: |
         docker build -t workouttracking_frontend ./Frontend/workouttracking-frontend
         docker tag workouttracking_frontend ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_frontend:latest
-
-    - name: Push frontend Docker image
-      run: |
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_frontend:latest
 
-    - name: Build and tag workout service Docker image
+    - name: Build, tag and push API Gateway Docker image
       run: |
-        docker build -t workouttracking_workoutservice ./WorkoutTracking/WorkoutService
-        docker tag workouttracking_workoutservice ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_workoutservice:latest
+        docker build -f ./Gateways/APIGateway/APIGateway/Dockerfile -t workouttracking_apigateway .
+        docker tag workouttracking_apigateway ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_apigateway:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_apigateway:latest
 
-    - name: Push workout service Docker image
+    - name: Build, tag and push Read service Docker image
       run: |
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_workoutservice:latest
+        docker build -f ./Services/ReadService/API/Dockerfile -t workouttracking_readservice .
+        docker tag workouttracking_readservice ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_readservice:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_readservice:latest
+
+    - name: Build, tag and push Write service Docker image
+      run: |
+        docker build -f ./Services/WriteService/API/Dockerfile -t workouttracking_writeservice .
+        docker tag workouttracking_writeservice ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_writeservice:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/workouttracking_writeservice:latest
