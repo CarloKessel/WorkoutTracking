@@ -7,7 +7,7 @@ public class Endpoint : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Get("/workout/{WorkoutId}");
+        Get("workout/{WorkoutId}");
         Permissions("read:workouts");
     }
 
