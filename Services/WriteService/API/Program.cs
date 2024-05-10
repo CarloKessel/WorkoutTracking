@@ -25,7 +25,10 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 app.UseCors("AllowAPIGateway")
-    .UseFastEndpoints()
+    .UseFastEndpoints(c =>
+    {
+        c.Endpoints.RoutePrefix = "write-api";
+    })
     .UseSwaggerGen();
 
 app.Run();

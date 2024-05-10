@@ -13,4 +13,11 @@ spec:
           service:
             name: readservice
             port:
-              number: 80
+              number: 8001
+      - path: /write-api
+        pathType: Prefix
+        backend:
+          service:
+            name: writeservice
+            port:
+              number: 8101

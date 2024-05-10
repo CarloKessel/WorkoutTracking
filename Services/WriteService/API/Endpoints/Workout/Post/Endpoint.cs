@@ -7,7 +7,7 @@ public class Endpoint : Endpoint<Request, Response>
 {
     public override void Configure()
     {
-        Post("/workout");
+        Post("workout");
         Permissions("add:workout");
     }
 
@@ -16,6 +16,6 @@ public class Endpoint : Endpoint<Request, Response>
         var command = new AddNewWorkoutCommand(request.UserEmail, request.Name);
         var result = await command.ExecuteAsync(cancellationToken);
 
-        await SendCreatedAtAsync(":8082/workout/" + result.WorkoutId, result.WorkoutId, new Response() { Id = result.WorkoutId }, cancellation: cancellationToken);
+        await SendCreatedAtAsync(":5101/workout/" + result.WorkoutId, result.WorkoutId, new Response() { Id = result.WorkoutId }, cancellation: cancellationToken);
     }
 }
