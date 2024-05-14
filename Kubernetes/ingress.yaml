@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wt-ingress
+spec:
+  rules:
+  - host: wt.localhost
+    http:
+      paths:
+      - path: /read-api
+        pathType: Prefix
+        backend:
+          service:
+            name: readservice
+            port:
+              number: 8001
+      - path: /write-api
+        pathType: Prefix
+        backend:
+          service:
+            name: writeservice
+            port:
+              number: 8101

@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: readservice-sa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: readservice
+  labels:
+    app: readservice
+    service: readservice
+spec:
+  selector:
+    app: readservice
+  ports:
+    - name: http
+      port: 8001
+      targetPort: 5101
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readservice-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: readservice
+  template:
+    metadata:
+      labels:
+        app: readservice
+    spec:
+      serviceAccountName: readservice-sa
+      containers:
+      - name: readservice
+        image: carlovankessel/workouttracking_readservice:latest
+        ports:
+        - containerPort: 5101
+        env:
+        - name: Database__DatabasConnectionString
+          value: "Server=readdatabase;port=5432;Database=WorkoutTracking;User Id=read;Password=d7yB3Dftse9gce46PoaB9ck7;"
+        - name: APIGateway__APIGatewayUrl
+          value: "http://apigateway:5001"
+        - name: ASPNETCORE_URLS
+          value: "http://*:5101"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: readdatabase
+spec:
+  selector:
+    app: readdatabase
+  ports:
+    - port: 5432
+      targetPort: readdb-port
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: readdatabase-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: readdatabase
+  template:
+    metadata:
+      labels:
+        app: readdatabase
+    spec:
+      containers:
+      - name: readdatabase
+        image: postgres
+        ports:
+        - containerPort: 5432
+          name: readdb-port
+        env:
+        - name: POSTGRES_USER
+          value: read
+        - name: POSTGRES_PASSWORD
+          value: d7yB3Dftse9gce46PoaB9ck7
+        - name: POSTGRES_DB
+          value: WorkoutTracking
