@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  readdatabase:
+    image: postgres
+    restart: always
+    ports:
+      - "5440:5432"
+    environment:
+      POSTGRES_USER: 
+      POSTGRES_PASSWORD: 
+      POSTGRES_DB: 
+    networks:
+      - workouttracking-network
+    container_name: readdatabase
+
+  writedatabase:
+    image: postgres
+    restart: always
+    ports:
+      - "5441:5432"
+    environment:
+      POSTGRES_USER: 
+      POSTGRES_PASSWORD: 
+      POSTGRES_DB: 
+    networks:
+      - workouttracking-network
+    container_name: writedatabase
+
+  frontend:
+    image: carlovankessel/workouttracking_frontend:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - workouttracking-network
+    container_name: frontend
+    volumes:
+      - ./Frontend/workouttracking-frontend:/app
+
+  apigateway:
+    image: carlovankessel/workouttracking_apigateway:latest
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      - Frontend__FrontendUrl=
+      - ASPNETCORE_URLS=http://*:5001
+    networks:
+      - workouttracking-network
+    container_name: apigateway
+
+
+  readservice:
+    image: carlovankessel/workouttracking_readservice:latest
+    restart: always
+    depends_on:
+      - readdatabase
+    ports:
+      - "5101:5101"
+    networks:
+      - workouttracking-network
+    environment:
+      - Database__DatabasConnectionString=
+      - APIGateway__APIGatewayUrl=http://apigateway:5001
+      - ASPNETCORE_URLS=http://*:5101
+      - ASPNETCORE_ENVIRONMENT=
+    container_name: readservice
+
+  writeservice:
+    image: carlovankessel/workouttracking_writeservice:latest
+    restart: always
+    depends_on:
+      - writedatabase
+    ports:
+      - "5201:5201"
+    networks:
+      - workouttracking-network
+    environment:
+      - Database__DatabasConnectionString=
+      - APIGateway__APIGatewayUrl=http://apigateway:5001
+      - ASPNETCORE_URLS=http://*:5201
+      - ASPNETCORE_ENVIRONMENT=
+    container_name: writeservice
+
+networks:
+  workouttracking-network:
+    name: workouttracking-network
+    driver: bridge

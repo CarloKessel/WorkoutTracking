@@ -11,7 +11,6 @@
 
 <script>
 import axios from 'axios';
-// import router from "@/router";
 
 export default {
   name: 'StartNewWorkout',
@@ -39,7 +38,6 @@ export default {
           }
         };
 
-        // await axios.post(`${process.env.API_GATEWAY_URL}/workouts/` + this.form.name + `/` + this.$keycloak.profile.email, {}, config)
         await axios.post(`${process.env.VUE_APP_API_GATEWAY}/write-api/workout`, {name: this.form.name, userEmail: this.$auth0.user.value.email}, config)
             .then(async (res) => {
               this.form.name = '';

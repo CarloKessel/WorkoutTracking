@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: workoutwriteservice-sa
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workoutwriteservice
+  labels:
+    app: workoutwriteservice
+    service: workoutwriteservice
+spec:
+  selector:
+    app: workoutwriteservice
+  ports:
+    - name: http
+      port: 8101
+      targetPort: 5201
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workoutwriteservice-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workoutwriteservice
+  template:
+    metadata:
+      labels:
+        app: workoutwriteservice
+    spec:
+      serviceAccountName: workoutwriteservice-sa
+      containers:
+      - name: workoutwriteservice
+        image: carlovankessel/wt_workoutwriteservice:latest
+        ports:
+        - containerPort: 5201
+        env:
+        - name: Database__DatabasConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: workoutwrite-secret
+              key: Database__DatabasConnectionString
+        - name: APIGateway__APIGatewayUrl
+          valueFrom:
+            secretKeyRef:
+              name: workoutwrite-secret
+              key: APIGateway__APIGatewayUrl
+        - name: ASPNETCORE_URLS
+          valueFrom:
+            secretKeyRef:
+              name: workoutwrite-secret
+              key: ASPNETCORE_URLS
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            secretKeyRef:
+              name: workoutwrite-secret
+              key: ASPNETCORE_ENVIRONMENT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workoutwritedatabase
+spec:
+  selector:
+    app: workoutwritedatabase
+  ports:
+    - port: 5432
+      targetPort: writedb-port
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workoutwritedatabase-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workoutwritedatabase
+  template:
+    metadata:
+      labels:
+        app: workoutwritedatabase
+    spec:
+      containers:
+      - name: workoutwritedatabase
+        image: postgres
+        ports:
+        - containerPort: 5432
+          name: writedb-port
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: workoutwrite-database-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: workoutwrite-database-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: workoutwrite-database-secret
+              key: POSTGRES_DB
