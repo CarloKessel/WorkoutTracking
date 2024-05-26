@@ -2,22 +2,26 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: wt-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   rules:
-  - host: wt.localhost
+  - host: 
     http:
       paths:
       - path: /read-api
         pathType: Prefix
         backend:
           service:
-            name: readservice
+            name: workoutreadservice
             port:
               number: 8001
       - path: /write-api
         pathType: Prefix
         backend:
           service:
-            name: writeservice
+            name: workoutwriteservice
             port:
               number: 8101

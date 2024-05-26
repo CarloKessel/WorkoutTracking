@@ -8,9 +8,14 @@ jobs:
     load-tests:
       uses: ./.github/workflows/Load-Test.yml
       secrets:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
         AUTH_TEST_TOKEN: ${{ secrets.AUTH_TEST_TOKEN }}
+        READ_PG_USER: ${{ secrets.READ_PG_USER }}
+        READ_PG_PW: ${{ secrets.READ_PG_PW }}
+        PG_DB: ${{ secrets.PG_DB }}
+        WRITE_PG_USER: ${{ secrets.WRITE_PG_USER }}
+        WRITE_PG_PW: ${{ secrets.WRITE_PG_PW }}
+        FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+        ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
 
     unit-tests: 
         uses: ./.github/workflows/Unit-Test.yml
@@ -20,7 +25,7 @@ jobs:
         strategy: 
             matrix: 
                 dotnet-version: [8.x]
-                working-directory: [ 'WorkoutTracking' ]
+                working-directory: [ 'Services/Workout/ReadService', 'Services/Workout/ReadService' ]
 
         steps:
             - uses: actions/checkout@v4
