@@ -7,9 +7,9 @@ services:
     ports:
       - "5440:5432"
     environment:
-      POSTGRES_USER: ${{ secrets.READ_PG_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.READ_PG_PW }}
-      POSTGRES_DB: ${{ secrets.PG_DB }}
+      POSTGRES_USER: ${READ_PG_USER}
+      POSTGRES_PASSWORD: ${READ_PG_PW}
+      POSTGRES_DB: ${PG_DB}
     networks:
       - workouttracking-network
     container_name: readdatabase
@@ -20,18 +20,15 @@ services:
     ports:
       - "5441:5432"
     environment:
-      POSTGRES_USER: ${{ secrets.WRITE_PG_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.WRITE_PG_PW }}
-      POSTGRES_DB: ${{ secrets.PG_DB }}
+      POSTGRES_USER: ${WRITE_PG_USER}
+      POSTGRES_PASSWORD: ${WRITE_PG_PW}
+      POSTGRES_DB: ${PG_DB}
     networks:
       - workouttracking-network
     container_name: writedatabase
 
   frontend:
     image: carlovankessel/workouttracking_frontend:latest
-    # build:
-    #   context: ./Frontend/workouttracking-frontend
-    #   dockerfile: Dockerfile
     ports:
       - "8080:8080"
     networks:
@@ -43,36 +40,29 @@ services:
   apigateway:
     image: carlovankessel/workouttracking_apigateway:latest
     restart: always
-    # build:
-    #   context: ./Gateways/APIGateway/APIGateway
-    #   dockerfile: Dockerfile
     ports:
       - "5001:5001"
     environment:
-      - Frontend__FrontendUrl=${{ secrets.FRONTEND_URL }}
+      - Frontend__FrontendUrl=${FRONTEND_URL}
       - ASPNETCORE_URLS=http://*:5001
     networks:
       - workouttracking-network
     container_name: apigateway
-
 
   readservice:
     image: carlovankessel/workouttracking_readservice:latest
     restart: always
     depends_on:
       - readdatabase
-    # build:
-    #   context: ./Services/ReadService/API
-    #   dockerfile: Dockerfile
     ports:
       - "5101:5101"
     networks:
       - workouttracking-network
     environment:
-      - Database__DatabasConnectionString=Server=readdatabase;port=5432;Database=${{ secrets.PG_DB }};User Id=${{ secrets.READ_PG_USER }};Password=${{ secrets.READ_PG_PW }};
+      - Database__DatabasConnectionString=Server=readdatabase;port=5432;Database=${PG_DB};User Id=${READ_PG_USER};Password=${READ_PG_PW};
       - APIGateway__APIGatewayUrl=http://apigateway:5001
       - ASPNETCORE_URLS=http://*:5101
-      - ASPNETCORE_ENVIRONMENT=${{ secrets.ASPNETCORE_ENVIRONMENT }}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     container_name: readservice
 
   writeservice:
@@ -80,18 +70,15 @@ services:
     restart: always
     depends_on:
       - writedatabase
-    # build:
-    #   context: ./Services/WriteService/API
-    #   dockerfile: Dockerfile
     ports:
       - "5201:5201"
     networks:
       - workouttracking-network
     environment:
-      - Database__DatabasConnectionString=Server=writedatabase;port=5432;Database=${{ secrets.PG_DB }};User Id=${{ secrets.WRITE_PG_USER }};Password=${{ secrets.WRITE_PG_PW }};
+      - Database__DatabasConnectionString=Server=writedatabase;port=5432;Database=${PG_DB};User Id=${WRITE_PG_USER};Password=${WRITE_PG_PW};
       - APIGateway__APIGatewayUrl=http://apigateway:5001
       - ASPNETCORE_URLS=http://*:5201
-      - ASPNETCORE_ENVIRONMENT=${{ secrets.ASPNETCORE_ENVIRONMENT }}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     container_name: writeservice
 
 networks:

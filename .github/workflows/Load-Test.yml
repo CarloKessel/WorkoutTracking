@@ -5,6 +5,20 @@ on:
     secrets:
       AUTH_TEST_TOKEN:
         required: true
+      READ_PG_USER:
+        required: true
+      READ_PG_PW:
+        required: true
+      PG_DB:
+        required: true
+      WRITE_PG_USER:
+        required: true
+      WRITE_PG_PW:
+        required: true
+      FRONTEND_URL:
+        required: true
+      ASPNETCORE_ENVIRONMENT:
+        required: true
 
 jobs:
   load-tests: 
@@ -13,6 +27,14 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Start containers
+      env: 
+        READ_PG_USER: ${{ secrets.READ_PG_USER }}
+        READ_PG_PW: ${{ secrets.READ_PG_PW }}
+        PG_DB: ${{ secrets.PG_DB }}
+        WRITE_PG_USER: ${{ secrets.WRITE_PG_USER }}
+        WRITE_PG_PW: ${{ secrets.WRITE_PG_PW }}
+        FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+        ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
       run: docker-compose up -d
 
     - name: Install Artillery
