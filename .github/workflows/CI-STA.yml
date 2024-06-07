@@ -1,0 +1,34 @@
+name: WorkoutTracking Staging CI
+
+on: 
+  pull_request:
+    branches: [ staging ]
+
+jobs:
+  load-test-staging:
+    name: Load Test Staging using Artillery
+    runs-on: [ ubuntu-latest ]
+    steps: 
+    - uses: actions/checkout@v4
+
+    - name: Connect to VPN
+      run: |
+        sudo apt-get update
+        sudo apt-get install openconnect
+        printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect --protocol=gp vpnnetlab.fhict.nl -b
+
+    - name: Setup SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa ${{ secrets.VM_IP }} >> ~/.ssh/known_hosts
+
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
+
+    - name: Run Load Test
+      run: |
+        ssh ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}
+        artillery run --variables "{\"baseUrl\": \"${{ secrets.VM_API_GATEWAY_URL }}\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\", \"date\": \"${{ steps.date.outputs.date }}\", \"promeGatewayUrl\": \"${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}\"}" Artillery-Load-Tests-Get-Endpoints.yml

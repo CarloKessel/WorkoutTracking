@@ -2,6 +2,7 @@ using Infrastructure.Extensions;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Application.Extensions;
+using API.AuthMiddelware;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
@@ -24,11 +25,14 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseCors("AllowAPIGateway")
-    .UseFastEndpoints(c =>
-    {
-        c.Endpoints.RoutePrefix = "write-api";
-    })
-    .UseSwaggerGen();
+app.UseCors("AllowAPIGateway");
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseApiGatewayMiddleware();
+app.UseFastEndpoints(c => 
+{
+    c.Endpoints.RoutePrefix = "write-api";
+});
+app.UseSwaggerGen();
 
 app.Run();

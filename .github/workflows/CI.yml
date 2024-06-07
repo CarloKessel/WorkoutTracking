@@ -16,6 +16,8 @@ jobs:
         WRITE_PG_PW: ${{ secrets.WRITE_PG_PW }}
         FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
         ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
+        VM_PROMETHEUS_GATEWAY_URL: ${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}
+        VM_API_GATEWAY_URL: ${{ secrets.VM_API_GATEWAY_URL }}
 
     unit-tests: 
         uses: ./.github/workflows/Unit-Test.yml
@@ -23,9 +25,9 @@ jobs:
     build: 
         runs-on: [ ubuntu-latest ]
         strategy: 
-            matrix: 
-                dotnet-version: [8.x]
-                working-directory: [ 'Services/Workout/ReadService', 'Services/Workout/ReadService' ]
+          matrix: 
+            dotnet-version: [8.x]
+            working-directory: [ 'Services/Workout/ReadService', 'Services/Workout/ReadService' ]
 
         steps:
             - uses: actions/checkout@v4

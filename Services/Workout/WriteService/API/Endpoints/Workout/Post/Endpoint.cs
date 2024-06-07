@@ -8,7 +8,7 @@ public class Endpoint : Endpoint<Request, Response>
     public override void Configure()
     {
         Post("workout");
-        Permissions("add:workout");
+        Permissions("write:workouts");
     }
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)

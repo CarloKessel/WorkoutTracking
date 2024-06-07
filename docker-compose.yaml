@@ -28,7 +28,7 @@ services:
     container_name: writedatabase
 
   frontend:
-    image: carlovankessel/workouttracking_frontend:latest
+    image: carlovankessel/wt_frontend:latest
     ports:
       - "8080:8080"
     networks:
@@ -38,19 +38,23 @@ services:
       - ./Frontend/workouttracking-frontend:/app
 
   apigateway:
-    image: carlovankessel/workouttracking_apigateway:latest
+    image: carlovankessel/wt_apigateway:latest
     restart: always
     ports:
       - "5001:5001"
     environment:
       - Frontend__FrontendUrl=${FRONTEND_URL}
+      - ApiKey=${GATEWAY_API_KEY}
+      - Authentication__Schemes__Bearer__Authority=${AUTH_AUTHORITY}
+      - Authentication__Schemes__Bearer__ValidAudiences=${AUTH_VALID_AUDIENCES}
+      - Authentication__Schemes__Bearer__ValidIssuer=${AUTH_VALID_ISSUER}
       - ASPNETCORE_URLS=http://*:5001
     networks:
       - workouttracking-network
     container_name: apigateway
 
   readservice:
-    image: carlovankessel/workouttracking_readservice:latest
+    image: carlovankessel/wt_workoutreadservice:latest
     restart: always
     depends_on:
       - readdatabase
@@ -61,12 +65,16 @@ services:
     environment:
       - Database__DatabasConnectionString=Server=readdatabase;port=5432;Database=${PG_DB};User Id=${READ_PG_USER};Password=${READ_PG_PW};
       - APIGateway__APIGatewayUrl=http://apigateway:5001
+      - ApiKey=${GATEWAY_API_KEY}
+      - Authentication__Schemes__Bearer__Authority=${AUTH_AUTHORITY}
+      - Authentication__Schemes__Bearer__ValidAudiences=${AUTH_VALID_AUDIENCES}
+      - Authentication__Schemes__Bearer__ValidIssuer=${AUTH_VALID_ISSUER}
       - ASPNETCORE_URLS=http://*:5101
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     container_name: readservice
 
   writeservice:
-    image: carlovankessel/workouttracking_writeservice:latest
+    image: carlovankessel/wt_workoutwriteservice:latest
     restart: always
     depends_on:
       - writedatabase
@@ -77,6 +85,10 @@ services:
     environment:
       - Database__DatabasConnectionString=Server=writedatabase;port=5432;Database=${PG_DB};User Id=${WRITE_PG_USER};Password=${WRITE_PG_PW};
       - APIGateway__APIGatewayUrl=http://apigateway:5001
+      - ApiKey=${GATEWAY_API_KEY}
+      - Authentication__Schemes__Bearer__Authority=${AUTH_AUTHORITY}
+      - Authentication__Schemes__Bearer__ValidAudiences=${AUTH_VALID_AUDIENCES}
+      - Authentication__Schemes__Bearer__ValidIssuer=${AUTH_VALID_ISSUER}
       - ASPNETCORE_URLS=http://*:5201
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
     container_name: writeservice

@@ -19,6 +19,10 @@ on:
         required: true
       ASPNETCORE_ENVIRONMENT:
         required: true
+      VM_PROMETHEUS_GATEWAY_URL:
+        required: true
+      VM_API_GATEWAY_URL:
+        required: true
 
 jobs:
   load-tests: 
@@ -36,13 +40,17 @@ jobs:
         FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
         ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
       run: docker-compose up -d
+    
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
 
     - name: Install Artillery
       run: npm install -g artillery
 
     - name: Run Load Test
       run: |
-        artillery run --variables "{\"baseUrl\": \"http://127.0.0.1:5001\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\"}" Artillery-Load-Tests-Get-Endpoints.yml
+        artillery run --variables "{\"baseUrl\": \"${{ secrets.VM_API_GATEWAY_URL }}\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\", \"date\": \"${{ steps.date.outputs.date }}\", \"promeGatewayUrl\": \"${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}\"}" Artillery-Load-Tests-Get-Endpoints.yml
 
     - name: Stop containers
       run: docker-compose down
