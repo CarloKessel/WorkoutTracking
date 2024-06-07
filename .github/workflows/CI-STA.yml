@@ -14,6 +14,7 @@ jobs:
     - name: Connect to VPN
       run: |
         sudo apt-get update
+        sudo /sbin/modprobe tun
         sudo apt-get install openconnect
         printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect --protocol=gp vpnnetlab.fhict.nl -b
 
