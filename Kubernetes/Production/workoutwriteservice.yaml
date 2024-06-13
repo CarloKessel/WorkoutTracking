@@ -49,6 +49,31 @@ spec:
             secretKeyRef:
               name: workoutwrite-secret
               key: APIGateway__APIGatewayUrl
+        - name: APIGateway__ApiKey
+          valueFrom:
+            secretKeyRef:
+              name: workoutread-secret
+              key: APIGateway__ApiKey
+        - name: Authentication__Schemes__Bearer__Authority
+          valueFrom:
+            secretKeyRef:
+              name: workoutread-secret
+              key: Authentication__Schemes__Bearer__Authority
+        - name: Authentication__Schemes__Bearer__ValidAudiences
+          valueFrom:
+            secretKeyRef:
+              name: workoutread-secret
+              key: Authentication__Schemes__Bearer__ValidAudiences
+        - name: Authentication__Schemes__Bearer__ValidAudiences__1
+          valueFrom:
+            secretKeyRef:
+              name: workoutread-secret
+              key: Authentication__Schemes__Bearer__ValidAudiences__1
+        - name: Authentication__Schemes__Bearer__ValidIssuer
+          valueFrom:
+            secretKeyRef:
+              name: workoutread-secret
+              key: Authentication__Schemes__Bearer__ValidIssuer
         - name: ASPNETCORE_URLS
           valueFrom:
             secretKeyRef:

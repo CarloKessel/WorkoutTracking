@@ -14,8 +14,9 @@ jobs:
     - name: Connect to VPN
       run: |
         sudo apt-get update
+        sudo /sbin/modprobe tun
         sudo apt-get install openconnect
-        printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect --protocol=gp vpnnetlab.fhict.nl -b
+        printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
 
     - name: Setup SSH key
       run: |
@@ -28,7 +29,74 @@ jobs:
       id: date
       run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
 
-    - name: Run Load Test
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_IP }}
+        username: ${{ secrets.VM_USER }}
+        password: ${{ secrets.VM_PASSWORD }}
+        port: 22
+        script: |
+          artillery run --output artillery_report.json --variables '{"baseUrl":"${{ secrets.VM_API_GATEWAY_URL }}", "authTestToken":"${{ secrets.AUTH_TEST_TOKEN }}", "date":"${{ steps.date.outputs.date }}", "promeGatewayUrl":"${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}"}' Artillery-Load-Tests-Get-Endpoints.yml
+          
+          p99=$(jq '.aggregate.summaries["http.response_time"].p99 // 0' artillery_report.json)
+          http_401=$(jq '.aggregate.counters["http.codes.401"] // 0' artillery_report.json)
+          http_403=$(jq '.aggregate.counters["http.codes.403"] // 0' artillery_report.json)
+          errors=$(jq '[.aggregate.counters | to_entries[] | select(.key | startswith("errors.")) | .value] | add // 0' artillery_report.json)
+          
+          echo "p99 value is $p99"
+          echo "401 errors: $http_401"
+          echo "403 errors: $http_403"
+          echo "Total errors: $errors"
+
+          if (( $(echo "$p99 > 400" | bc -l) )); then
+            echo "p99 value is higher than 400. Failing the workflow."
+            exit 1
+          fi
+          if (( $http_401 > 0 )); then
+            echo "HTTP 401 errors found. Failing the workflow."
+            exit 1
+          fi
+          if (( $http_403 > 0 )); then
+            echo "HTTP 403 errors found. Failing the workflow."
+            exit 1
+          fi
+          if (( $errors > 0 )); then
+            echo "Errors found (e.g., ETIMEDOUT). Failing the workflow."
+            exit 1
+          fi
+
+          echo "All checks passed."
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+    
+    - name: Build, tag and push frontend Docker image
       run: |
-        ssh ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}
-        artillery run --variables "{\"baseUrl\": \"${{ secrets.VM_API_GATEWAY_URL }}\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\", \"date\": \"${{ steps.date.outputs.date }}\", \"promeGatewayUrl\": \"${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}\"}" Artillery-Load-Tests-Get-Endpoints.yml
+        docker build -t wt_frontend ./Frontend/workouttracking-frontend
+        docker tag wt_frontend ${{ secrets.DOCKERHUB_USERNAME }}/wt_frontend:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/wt_frontend:latest
+  
+    - name: Build, tag and push API Gateway Docker image
+      run: |
+        cd Gateways/APIGateway
+        docker build -f ./APIGateway/Dockerfile -t wt_apigateway .
+        docker tag wt_apigateway ${{ secrets.DOCKERHUB_USERNAME }}/wt_apigateway:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/wt_apigateway:latest
+  
+    - name: Build, tag and push Read service Docker image
+      run: |
+        cd Services/Workout/ReadService
+        docker build -f ./API/Dockerfile -t wt_workoutreadservice .
+        docker tag wt_workoutreadservice ${{ secrets.DOCKERHUB_USERNAME }}/wt_workoutreadservice:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/wt_workoutreadservice:latest
+
+    - name: Build, tag and push Write service Docker image
+      run: |
+        cd Services/Workout/WriteService
+        docker build -f ./API/Dockerfile -t wt_workoutwriteservice .
+        docker tag wt_workoutwriteservice ${{ secrets.DOCKERHUB_USERNAME }}/wt_workoutwriteservice:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/wt_workoutwriteservice:latest
