@@ -36,7 +36,7 @@ jobs:
         username: ${{ secrets.VM_USER }}
         password: ${{ secrets.VM_PASSWORD }}
         port: 22
-        script: 'artillery run --output artillery_report.json --variables "{"baseUrl": "${{ secrets.VM_API_GATEWAY_URL }}", "authTestToken": "${{ secrets.AUTH_TEST_TOKEN }}", "date": "${{ steps.date.outputs.date }}", "promeGatewayUrl": "${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}"}" Artillery-Load-Tests-Get-Endpoints.yml'
+        script: 'artillery run --output artillery_report.json --variables {"baseUrl": "${{ secrets.VM_API_GATEWAY_URL }}", "authTestToken": "${{ secrets.AUTH_TEST_TOKEN }}", "date": "${{ steps.date.outputs.date }}", "promeGatewayUrl": "${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}"} Artillery-Load-Tests-Get-Endpoints.yml'
 
     # - name: Connect with SSH and Run Load Test
     #   run: |
