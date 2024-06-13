@@ -29,9 +29,11 @@ jobs:
       id: date
       run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
 
+    - name: Connect with SSH
+      run: ssh ${{ secrets.VM_USER }}@${{ secrets.VM_IP }}
+
     - name: Run Load Test
       run: |
-        ssh ${{ secrets.VM_USER }}@${{ secrets.VM_IP }} 
         artillery run --output artillery_report.json --variables "{\"baseUrl\": \"${{ secrets.VM_API_GATEWAY_URL }}\", \"authTestToken\": \"${{ secrets.AUTH_TEST_TOKEN }}\", \"date\": \"${{ steps.date.outputs.date }}\", \"promeGatewayUrl\": \"${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}\"}" Artillery-Load-Tests-Get-Endpoints.yml
         
     - name: Check for errors and p99 value
