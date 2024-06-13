@@ -7,10 +7,15 @@
 *.local.*
 
 # Kubernetes secrets
-/Kubernetes/Secrets/WorkoutRead/workoutread_secret.yaml
-/Kubernetes/Secrets/WorkoutRead/workoutread_database_secret.yaml
-/Kubernetes/Secrets/WorkoutWrite/workoutwrite_secret.yaml
-/Kubernetes/Secrets/WorkoutWrite/workoutwrite_database_secret.yaml
+/Kubernetes/Production/workoutread_secret.yaml
+/Kubernetes/Production/workoutread_database_secret.yaml
+/Kubernetes/Production/workoutwrite_secret.yaml
+/Kubernetes/Production/workoutwrite_database_secret.yaml
+
+/Kubernetes/Staging/workoutread_secret.yaml
+/Kubernetes/Staging/workoutread_database_secret.yaml
+/Kubernetes/Staging/workoutwrite_secret.yaml
+/Kubernetes/Staging/workoutwrite_database_secret.yaml
 
 # Vue3 Frontend
 .DS_Store
