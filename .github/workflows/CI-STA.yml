@@ -36,9 +36,34 @@ jobs:
         username: ${{ secrets.VM_USER }}
         password: ${{ secrets.VM_PASSWORD }}
         port: 22
-        script: 
+        script: |
           artillery run --output artillery_report.json --variables '{"baseUrl":"${{ secrets.VM_API_GATEWAY_URL }}", "authTestToken":"${{ secrets.AUTH_TEST_TOKEN }}", "date":"${{ steps.date.outputs.date }}", "promeGatewayUrl":"${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}"}' Artillery-Load-Tests-Get-Endpoints.yml
-
+          sudo apt-get install jq
+          p99=$(jq '.aggregate.summaries["http.response_time"].p99 // 0' artillery_report.json)
+          http_401=$(jq '.aggregate.counters["http.codes.401"] // 0' artillery_report.json)
+          http_403=$(jq '.aggregate.counters["http.codes.403"] // 0' artillery_report.json)
+          errors=$(jq '[.aggregate.counters | to_entries[] | select(.key | startswith("errors.")) | .value] | add // 0' artillery_report.json)
+          echo "p99 value is $p99"
+          echo "401 errors: $http_401"
+          echo "403 errors: $http_403"
+          echo "Total errors: $errors"
+          if (( $(echo "$p99 > 400" | bc -l) )); then
+            echo "p99 value is higher than 400. Failing the workflow."
+            exit 1
+          fi
+          if (( $http_401 > 0 )); then
+            echo "HTTP 401 errors found. Failing the workflow."
+            exit 1
+          fi
+          if (( $http_403 > 0 )); then
+            echo "HTTP 403 errors found. Failing the workflow."
+            exit 1
+          fi
+          if (( $errors > 0 )); then
+            echo "Errors found (e.g., ETIMEDOUT). Failing the workflow."
+            exit 1
+          fi
+          echo "All checks passed."
 
     # - name: Connect with SSH and Run Load Test
     #   run: |
