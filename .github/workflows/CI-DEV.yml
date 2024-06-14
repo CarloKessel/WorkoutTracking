@@ -111,5 +111,5 @@ jobs:
           microk8s kubectl rollout restart deployment workoutreadservice-deployment
           microk8s kubectl rollout restart deployment workoutwriteservice-deployment
 
-          docker compose -f docker-compose-staging.local.yml pull
-          docker compose -f docker-compose-staging.local.yml up -d
+          docker compose -f docker-compose-staging.local.yaml pull
+          docker compose -f docker-compose-staging.local.yaml up -d
