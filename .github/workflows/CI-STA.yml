@@ -18,13 +18,6 @@ jobs:
         sudo apt-get install openconnect
         printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
 
-    - name: Setup SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -t rsa ${{ secrets.VM_IP }} >> ~/.ssh/known_hosts
-
     - name: Get current date
       id: date
       run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
@@ -32,12 +25,12 @@ jobs:
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.VM_IP }}
-        username: ${{ secrets.VM_USER }}
-        password: ${{ secrets.VM_PASSWORD }}
+        host: ${{ secrets.MONITORING_VM_IP }}
+        username: ${{ secrets.MONITORING_VM_USER }}
+        password: ${{ secrets.MONITORING_VM_PASSWORD }}
         port: 22
         script: |
-          artillery run --output artillery_report.json --variables '{"baseUrl":"${{ secrets.VM_API_GATEWAY_URL }}", "authTestToken":"${{ secrets.AUTH_TEST_TOKEN }}", "date":"${{ steps.date.outputs.date }}", "promeGatewayUrl":"${{ secrets.VM_PROMETHEUS_GATEWAY_URL }}"}' Artillery-Load-Tests-Get-Endpoints.yml
+          artillery run --output artillery_report.json --variables '{"baseUrl":"${{ secrets.MONITORING_VM_API_GATEWAY_URL }}", "authTestToken":"${{ secrets.AUTH_TEST_TOKEN }}", "date":"${{ steps.date.outputs.date }}", "promeGatewayUrl":"${{ secrets.MONITORING_VM_PROMETHEUS_GATEWAY_URL }}"}' Artillery-Load-Tests-Get-Endpoints.yml
           
           p99=$(jq '.aggregate.summaries["http.response_time"].p99 // 0' artillery_report.json)
           http_401=$(jq '.aggregate.counters["http.codes.401"] // 0' artillery_report.json)

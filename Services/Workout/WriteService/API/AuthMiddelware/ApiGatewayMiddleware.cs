@@ -1,4 +1,6 @@
-﻿namespace API.AuthMiddelware;
+﻿using Microsoft.IdentityModel.Tokens;
+
+namespace API.AuthMiddelware;
 
 public class ApiGatewayMiddleware
 {
@@ -14,16 +16,22 @@ public class ApiGatewayMiddleware
     public async Task Invoke(HttpContext context)
     {
         var apiKey = _configuration.GetValue<string>("APIGateway:ApiKey");
-        context.Request.Headers.TryGetValue("X-Api-Gateway-Key", out var test);
-
-        if (!context.Request.Headers.TryGetValue("X-Api-Gateway-Key", out var extractedApiKey) || !apiKey.Equals(extractedApiKey))
+        if (apiKey.IsNullOrEmpty())
         {
-            context.Response.StatusCode = 403; // Forbidden
-            await context.Response.WriteAsync("Access forbidden.");
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsync("ApiKey not provided in configuration.");
             return;
         }
-
-        await _next(context);
+        else
+        {
+            if (!context.Request.Headers.TryGetValue("X-Api-Gateway-Key", out var extractedApiKey) || (apiKey != extractedApiKey))
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsync("Access forbidden.");
+                return;
+            }
+            await _next(context);
+        }
     }
 }
 
