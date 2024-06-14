@@ -3,6 +3,46 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# All local user files
+*.local.*
+
+# Kubernetes secrets
+/Kubernetes/Production/workoutread_secret.yaml
+/Kubernetes/Production/workoutread_database_secret.yaml
+/Kubernetes/Production/workoutwrite_secret.yaml
+/Kubernetes/Production/workoutwrite_database_secret.yaml
+
+/Kubernetes/Staging/workoutread_secret.yaml
+/Kubernetes/Staging/workoutread_database_secret.yaml
+/Kubernetes/Staging/workoutwrite_secret.yaml
+/Kubernetes/Staging/workoutwrite_database_secret.yaml
+
+# Vue3 Frontend
+.DS_Store
+node_modules
+/dist
+
+.env
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+
 # User-specific files
 *.rsuser
 *.suo

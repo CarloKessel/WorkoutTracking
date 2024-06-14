@@ -1,0 +1,26 @@
+config:
+  target: '{{ baseUrl }}'
+  phases:
+    - duration: 60
+      arrivalRate: 25
+  defaults:
+    headers:
+      Connection: "keep-alive"
+      Authorization: 'Bearer {{ authTestToken }}'
+  plugins:
+    publish-metrics:
+      - type: prometheus
+        pushgateway: '{{ promeGatewayUrl }}'
+        tags:
+          - 'testId:{{ date }}'
+
+scenarios: 
+  - flow:
+      - loop:
+        - get:
+            url: "/read-api/workout/1" # Good case 200 response
+        - get:
+            url: "/read-api/workout/2" # Bad case 404 response
+        - get:
+            url: "/read-api/workout/push" # Bad case 400 response
+        count: 10

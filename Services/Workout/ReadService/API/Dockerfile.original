@@ -1,0 +1,28 @@
+# Use the official .NET SDK image for building the application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Set the working directory within the container
+WORKDIR /app
+
+# Copy the solution file and restore dependencies
+COPY ../ReadService.sln .
+COPY API/*.csproj ./API/
+COPY Infrastructure/*.csproj ./Infrastructure/
+COPY Application/*.csproj ./Application/
+COPY Domain/*.csproj ./Domain/
+RUN dotnet restore
+
+# Copy the entire project and build
+COPY . .
+RUN dotnet build -c Release -o /app/build
+
+# Publish the application
+FROM build AS publish
+RUN dotnet publish "API/API.csproj" -c Release -o /app/publish
+
+# Build the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+EXPOSE 8081
+ENTRYPOINT ["dotnet", "API.dll"]

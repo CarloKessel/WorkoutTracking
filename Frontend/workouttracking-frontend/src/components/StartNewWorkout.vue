@@ -11,7 +11,6 @@
 
 <script>
 import axios from 'axios';
-// import router from "@/router";
 
 export default {
   name: 'StartNewWorkout',
@@ -30,15 +29,16 @@ export default {
   methods: {
     async startWorkout() {
       if (this.formIsValid) {
+        const token = await this.$auth0.getAccessTokenSilently();
         const config = {
           headers: {
-            'Content-Type': 'application/json'
-            // 'Authorization': 'Bearer ' + localStorage.getItem("vue-token")
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Authorization': 'Bearer ' + token
           }
         };
 
-        // await axios.post(`${process.env.API_GATEWAY_URL}/workouts/` + this.form.name + `/` + this.$keycloak.profile.email, {}, config)
-        await axios.post(`${process.env.VUE_APP_BACK_END_API_URL}/workout`, {name: this.form.name}, config)
+        await axios.post(`${process.env.VUE_APP_API_GATEWAY}/write-api/workout`, {name: this.form.name, userEmail: this.$auth0.user.value.email}, config)
             .then(async (res) => {
               this.form.name = '';
               console.log(res);
