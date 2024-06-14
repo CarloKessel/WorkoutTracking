@@ -16,7 +16,7 @@ public class ApiGatewayMiddleware
         var apiKey = _configuration.GetValue<string>("APIGateway:ApiKey");
         if (apiKey.IsNullOrEmpty())
         {
-            context.Response.StatusCode = 401; // Forbidden
+            context.Response.StatusCode = 401;
             await context.Response.WriteAsync("ApiKey not provided in configuration.");
             return;
         }
@@ -24,7 +24,7 @@ public class ApiGatewayMiddleware
         {
             if (!context.Request.Headers.TryGetValue("X-Api-Gateway-Key", out var extractedApiKey) || (apiKey != extractedApiKey))
             {
-                context.Response.StatusCode = 403; // Forbidden
+                context.Response.StatusCode = 403;
                 await context.Response.WriteAsync("Access forbidden.");
                 return;
             }
