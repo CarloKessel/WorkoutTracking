@@ -99,13 +99,6 @@ jobs:
         sudo /sbin/modprobe tun
         sudo apt-get install openconnect
         printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
-
-    - name: Setup SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -t rsa ${{ secrets.VM_IP }} >> ~/.ssh/known_hosts
     
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@v1.0.3
