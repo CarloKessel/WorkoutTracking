@@ -1,4 +1,6 @@
-﻿namespace API.AuthMiddelware;
+﻿using Microsoft.IdentityModel.Tokens;
+
+namespace API.AuthMiddelware;
 
 public class ApiGatewayMiddleware
 {

@@ -42,7 +42,7 @@ jobs:
           run: dotnet test
           working-directory: ${{ matrix.working-directory }}
 
-  deploy-to-staging:
+  deploy-staging-to-docker:
     name: Push Staging images to Docker Hub
     runs-on: ubuntu-latest
     needs: [build-dotnet-apps, test-dotnet-apps]
@@ -83,3 +83,40 @@ jobs:
         docker build -f ./API/Dockerfile -t wt_staging_workoutwriteservice .
         docker tag wt_staging_workoutwriteservice ${{ secrets.DOCKERHUB_USERNAME }}/wt_staging_workoutwriteservice:latest
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/wt_staging_workoutwriteservice:latest
+  
+  deploy-staging: 
+    name: Restart Staging Kubernetes Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy-staging-to-docker]
+    if: ${{ success() }}
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v4
+
+    - name: Connect to VPN
+      run: |
+        sudo apt-get update
+        sudo /sbin/modprobe tun
+        sudo apt-get install openconnect
+        printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
+
+    - name: Setup SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa ${{ secrets.VM_IP }} >> ~/.ssh/known_hosts
+    
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VM_IP }}
+        username: ${{ secrets.VM_USER }}
+        password: ${{ secrets.VM_PASSWORD }}
+        port: 22
+        script: |
+          microk8s kubectl rollout restart deployment workoutreadservice-deployment
+          microk8s kubectl rollout restart deployment workoutwriteservice-deployment
+
+          docker compose -f docker-compose-staging-local.yml pull
+          docker compose -f docker-compose-staging-local.yml up -d
