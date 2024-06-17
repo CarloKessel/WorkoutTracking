@@ -98,7 +98,7 @@ jobs:
         sudo apt-get update
         sudo /sbin/modprobe tun
         sudo apt-get install openconnect
-        printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
+        echo "${{ secrets.VPN_PASSWORD }}" | sudo openconnect --user="${{ secrets.VPN_USERNAME }}" --passwd-on-stdin "vpnnetlab.fhict.nl" -b
     
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@v1.0.3
