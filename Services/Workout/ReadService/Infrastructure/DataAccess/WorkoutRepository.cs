@@ -1,9 +1,9 @@
 ﻿using Application.Interfaces;
 using Domain.Models;
-using Infrastructure.Context;
+using Application.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.DataAccess;
+namespace Application.DataAccess;
 
 public class WorkoutRepository : IWorkoutRepository
 {
@@ -20,9 +20,21 @@ public class WorkoutRepository : IWorkoutRepository
         return workout ?? throw new Exception("Did not find workout.");
     }
 
-    public async Task<List<Workout>> ListAllWorkoutsFromUserId(string UserEmail, CancellationToken cancellationToken)
+    public async Task<List<Workout>> ListAllWorkoutsFromUserEmail(string UserEmail, CancellationToken cancellationToken)
     {
         var workouts = await _context.Workouts.Where(p => p.UserEmail == UserEmail).ToListAsync(cancellationToken);
         return workouts;
+    }
+
+    public async Task CreateWorkout(Workout workout, CancellationToken cancellationToken)
+    {
+        await _context.Workouts.AddAsync(workout, cancellationToken);
+        var id = await _context.SaveChangesAsync(cancellationToken);
+        Console.WriteLine($"Workout created with id: {id}");
+    }
+
+    public async Task DeleteWorkout(int workoutId, CancellationToken cancellationToken)
+    {
+        await _context.Workouts.Where(w => w.Id == workoutId).ExecuteDeleteAsync(cancellationToken);
     }
 }

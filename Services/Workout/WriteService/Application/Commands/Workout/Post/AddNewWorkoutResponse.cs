@@ -1,3 +1,3 @@
-﻿namespace Application.Commands.Post;
+﻿namespace Application.Commands.Workout.Post;
 
 public record AddNewWorkoutResponse(int WorkoutId);

@@ -9,5 +9,8 @@ public class MapperOrganizationProfile : Profile
     {
         CreateMap<WorkoutModel, Domain.Models.Workout>();
         CreateMap<Domain.Models.Workout, WorkoutModel>();
+
+        CreateMap<ExerciseModel, Domain.Models.Exercise>();
+        CreateMap<Domain.Models.Exercise, ExerciseModel>();
     }
 }

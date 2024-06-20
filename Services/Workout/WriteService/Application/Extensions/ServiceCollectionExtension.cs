@@ -1,4 +1,6 @@
 ﻿using Application.Configurations.AutoMapperConfiguration;
+using Application.Interfaces;
+using Application.MessageBroker;
 using FastEndpoints;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,7 @@ public static class ServiceCollectionExtension
         });
 
         services.AddFastEndpoints();
+        services.AddScoped<IMessageBrokerConnection, RabbitMQConnection>();
         return services;
     }
 }

@@ -17,10 +17,15 @@ config:
 scenarios: 
   - flow:
       - loop:
+        - post:
+          url: "/write-api/workout" # Good case 201 response
+          json:
+            name: "Workout {{ loopCount }}"
+            userEmail: "{{ userEmail }}"
         - get:
-            url: "/read-api/workout/1" # Good case 200 response
-        - get:
-            url: "/read-api/workout/2" # Bad case 404 response
+            url: "/read-api/workout/{{ loopCount }}" # Good case 200 response\
         - get:
             url: "/read-api/workout/push" # Bad case 400 response
+        - get:
+            url: "/read-api/workouts/user/{{ userEmail }}" # Good case 200 response
         count: 10
