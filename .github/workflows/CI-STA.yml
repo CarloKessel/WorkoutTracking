@@ -30,7 +30,7 @@ jobs:
         password: ${{ secrets.MONITORING_VM_PASSWORD }}
         port: 22
         script: |
-          artillery run --output artillery_report.json --variables '{"baseUrl":"${{ secrets.MONITORING_VM_API_GATEWAY_URL }}", "authTestToken":"${{ secrets.AUTH_TEST_TOKEN }}", "date":"${{ steps.date.outputs.date }}", "promeGatewayUrl":"${{ secrets.MONITORING_VM_PROMETHEUS_GATEWAY_URL }}"}' Artillery-Load-Tests-Get-Endpoints.yml
+          artillery run --output reports/${{ steps.date.outputs.date }}_artillery_report.json --variables '{"baseUrl":"${{ secrets.MONITORING_VM_API_GATEWAY_URL }}", "authTestToken":"${{ secrets.AUTH_TEST_TOKEN }}", "date":"${{ steps.date.outputs.date }}", "promeGatewayUrl":"${{ secrets.MONITORING_VM_PROMETHEUS_GATEWAY_URL }}", "userEmail":"${{ secrets.USER_EMAIL }}"}' Artillery-Load-Tests-Get-Endpoints.yml
           
           p99=$(jq '.aggregate.summaries["http.response_time"].p99 // 0' artillery_report.json)
           http_401=$(jq '.aggregate.counters["http.codes.401"] // 0' artillery_report.json)
@@ -42,7 +42,7 @@ jobs:
           echo "403 errors: $http_403"
           echo "Total errors: $errors"
 
-          if (( $(echo "$p99 > 400" | bc -l) )); then
+          if (( $(echo "$p99 > 2" | bc -l) )); then
             echo "p99 value is higher than 400. Failing the workflow."
             exit 1
           fi

@@ -1,11 +1,12 @@
 ﻿using Application.Interfaces;
-using Infrastructure.Context;
-using Infrastructure.DataAccess;
+using Application.Context;
+using Application.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Application.DataAccess;
 
-namespace Infrastructure.Extensions;
+namespace Application.Extensions;
 
 public static class ServiceCollectionExtension
 {
@@ -22,12 +23,13 @@ public static class ServiceCollectionExtension
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
                 context.Database.Migrate();
-                string sql = "INSERT INTO \"Workouts\" (\"Id\", \"UserEmail\", \"Name\", \"Type\", \"DateCreated\") VALUES (1, 'test@gmail.com', 'PPL', 0, '" + DateTime.UtcNow.ToString() + "');";
+                string sql = "INSERT INTO \"Workouts\" (\"Id\", \"UserEmail\", \"Name\", \"Type\", \"DateCreated\") VALUES (1, 'carlovankessel@gmail.com', 'PPL', 0, '" + DateTime.UtcNow.ToString() + "');";
                 context.Database.ExecuteSqlRaw(sql);
             }
         }
 
         services.AddScoped<IWorkoutRepository, WorkoutRepository>();
+        services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
         return services;
     }

@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/views/HomePage'
 import StatsPage from '@/views/StatsPage'
+import WorkoutComponent from "@/components/Workout";
 import { authGuard } from '@auth0/auth0-vue'
-
 
 const routes = [
   {
@@ -16,6 +16,12 @@ const routes = [
     name: 'StatsPage',
     component: StatsPage,
     beforeEnter: authGuard
+  },
+  {
+    path: '/workout/:id',
+    name: 'WorkoutComponent',
+    component: WorkoutComponent
+
   }
 ]
 

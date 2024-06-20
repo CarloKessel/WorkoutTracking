@@ -108,7 +108,12 @@ jobs:
         password: ${{ secrets.KUBE_VM_PASSWORD }}
         port: 22
         script: |
+          microk8s kubectl rollout restart deployment rabbitmq-deployment
+
+          microk8s kubectl rollout restart deployment workoutreaddatabase-deployment
           microk8s kubectl rollout restart deployment workoutreadservice-deployment
+
+          microk8s kubectl rollout restart deployment workoutwritedatabase-deployment
           microk8s kubectl rollout restart deployment workoutwriteservice-deployment
 
           docker compose -f docker-compose-staging.local.yaml pull
