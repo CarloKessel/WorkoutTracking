@@ -4,7 +4,7 @@ namespace Application.Models;
 
 public class WorkoutModel
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string UserEmail { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public WorkoutType Type { get; set; }

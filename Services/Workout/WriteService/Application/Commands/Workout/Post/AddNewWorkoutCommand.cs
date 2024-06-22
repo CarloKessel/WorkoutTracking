@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 
-namespace Application.Commands.Post;
+namespace Application.Commands.Workout.Post;
 
 public record AddNewWorkoutCommand(
     string UserEmail,

@@ -15,6 +15,6 @@ public class Endpoint : Endpoint<Request, Response>
     {
         var query = new GetWorkoutByIdQuery(request.WorkoutId);
         var response = await query.ExecuteAsync(cancellationToken);
-        await SendOkAsync(new Response { Name = response.Name }, cancellationToken);
+        await SendOkAsync(new Response { Workout = response.Workout }, cancellationToken);
     }
 }
