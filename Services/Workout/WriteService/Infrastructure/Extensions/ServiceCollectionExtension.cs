@@ -33,7 +33,6 @@ public static class ServiceCollectionExtension
                 using (var context = serviceProvider.GetRequiredService<WTContext>())
                 {
                     context.Database.EnsureCreated();
-                    //context.Database.Migrate();
 
                     // Insert initial data if necessary
                     if (!context.Workouts.Any())

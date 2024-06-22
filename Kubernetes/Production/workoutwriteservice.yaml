@@ -36,6 +36,10 @@ spec:
       containers:
       - name: workoutwriteservice
         image: carlovankessel/wt_workoutwriteservice:latest
+        resources:
+          limits:
+            cpu: "50m"
+            memory: "100Mi"
         ports:
         - containerPort: 5201
         env:
@@ -85,6 +89,25 @@ spec:
               name: workoutwrite-secret
               key: ASPNETCORE_ENVIRONMENT
 ---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: workoutwriteservice-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: workoutwriteservice-deployment
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -112,7 +135,10 @@ spec:
     spec:
       containers:
       - name: workoutwritedatabase
-        image: postgres
+        image: postgres:latest
+        args:
+        - "-c"
+        - "max_connections=1000"
         ports:
         - containerPort: 5432
           name: writedb-port
