@@ -23,9 +23,11 @@ WorkoutTracking is an application designed for logging workouts in the gym. It c
 
 1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/CarloKessel/WorkoutTracking.git
-   cd WorkoutTracking
+    ```bash
+    git clone https://github.com/CarloKessel/WorkoutTracking.git
+    cd WorkoutTracking
 2. Navigate to the `docker-compose.example.yml` file and add your secrets. 
-3. docker-compose -f docker-compose.example.yml up
+3. Run: 
+    ```bash
+    docker-compose -f docker-compose.example.yml up
 4. Access the frontend at `http://127.0.0.1:8080`.
