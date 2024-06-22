@@ -1,5 +1,7 @@
-﻿namespace Application.Querys.Workout.Get;
+﻿using Application.Models;
+
+namespace Application.Querys.Workout.Get;
 
 public record GetWorkoutByIdResponse(
-    string Name
+    WorkoutModel Workout
     );

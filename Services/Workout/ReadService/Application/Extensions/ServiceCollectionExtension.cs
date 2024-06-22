@@ -1,6 +1,7 @@
 ﻿using Application.Configurations.AutoMapperConfiguration;
 using FastEndpoints;
 using Microsoft.Extensions.DependencyInjection;
+using Application.MessageBroker;
 
 namespace Application.Extensions;
 
@@ -13,6 +14,9 @@ public static class ServiceCollectionExtension
         });
 
         services.AddFastEndpoints();
+
+        services.AddHostedService<RabbitMqHostedService>();
+
         return services;
     }
 }

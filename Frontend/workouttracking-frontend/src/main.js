@@ -19,5 +19,6 @@ app.use(
       }
     })
 );
+
 app.use(router);
 app.mount('#app');

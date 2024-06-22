@@ -1,14 +1,13 @@
-using Infrastructure.Extensions;
+using Application.Extensions;
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using Application.Extensions;
 using API.AuthMiddelware;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
-    .AddFastEndpoints()
-    .AddApplication()
     .AddInfrastructure(builder.Configuration, builder.Environment.IsDevelopment())
+    .AddApplication()
+    .AddFastEndpoints()
     .SwaggerDocument();
 
 builder.Services.AddCors(options =>
