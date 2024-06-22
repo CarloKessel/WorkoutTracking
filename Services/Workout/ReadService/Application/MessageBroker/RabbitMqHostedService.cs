@@ -45,17 +45,20 @@ public class RabbitMqHostedService : BackgroundService
             {
                 var workoutRepository = scope.ServiceProvider.GetRequiredService<IWorkoutRepository>();
                 var exerciseRepository = scope.ServiceProvider.GetRequiredService<IExerciseRepository>();
-                Console.WriteLine(ea.Exchange);
+
                 var message = ea.Body.ToArray();
                 switch (ea.Exchange)
                 {
                     case "WorkoutCreated":
                         var createdWorkout = JsonSerializer.Deserialize<Workout>(message);
                         if (createdWorkout != null)
+                        {
                             await workoutRepository.CreateWorkout(createdWorkout, cancellationToken);
+                            _channel.BasicAck(ea.DeliveryTag, false);
+                        }
                         else
                             Console.WriteLine("Message received, but workout was null.");
-                        
+
                         break;
                     case "WoroutDeleted":
                         var deletedWorkout = JsonSerializer.Deserialize<Workout>(message);
@@ -73,10 +76,10 @@ public class RabbitMqHostedService : BackgroundService
 
                         break;
                 }
-            }
+            }            
         };
 
-        _channel.BasicConsume(queueNameWorkout, true, consumer);
+        _channel.BasicConsume(queueNameWorkout, false, consumer);
         _channel.BasicConsume(queueNameExercise, true, consumer);
 
         Console.WriteLine("Consuming messages...");

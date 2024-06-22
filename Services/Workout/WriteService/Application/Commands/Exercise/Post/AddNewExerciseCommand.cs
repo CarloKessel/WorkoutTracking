@@ -3,6 +3,6 @@
 namespace Application.Commands.Exercise.Post;
 
 public record AddNewExerciseCommand(
-    int WorkoutId, 
+    Guid WorkoutId, 
     string Name
     ) : ICommand<AddNewExerciseResponse>;

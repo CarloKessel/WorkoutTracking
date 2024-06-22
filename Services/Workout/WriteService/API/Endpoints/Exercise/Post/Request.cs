@@ -2,6 +2,6 @@
 
 public class Request
 {
-    public required int WorkoutId {  get; set; }
+    public required Guid WorkoutId {  get; set; }
     public required string Name { get; set; }
 }

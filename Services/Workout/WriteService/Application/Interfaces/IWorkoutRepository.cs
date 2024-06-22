@@ -4,6 +4,6 @@ namespace Application.Interfaces;
 
 public interface IWorkoutRepository
 {
-    public Task<int> CreateWorkout(Workout workout, CancellationToken cancellationToken);
-    public Task DeleteWorkout(int workoutId, CancellationToken cancellationToken);
+    public Task<Guid> CreateWorkout(Workout workout, CancellationToken cancellationToken);
+    public Task DeleteWorkout(Guid workoutId, CancellationToken cancellationToken);
 }

@@ -3,5 +3,5 @@
 namespace Application.Querys.Exercise.Get;
 
 public record GetExercisesByWorkoutIdQuery(
-    int WorkoutId
+    Guid WorkoutId
     ) : ICommand<GetExercisesByWorkoutIdResponse>;

@@ -1,5 +1,4 @@
 ﻿using Application.Querys.Workout.List;
-using Domain.Models;
 using FastEndpoints;
 
 namespace API.Endpoints.Workout.List;
