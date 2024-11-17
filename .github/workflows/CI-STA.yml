@@ -23,7 +23,7 @@ jobs:
       run: echo "::set-output name=date::$(date +'%d-%m-%Y')"
 
     - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@v1.2.0
       with:
         host: ${{ secrets.MONITORING_VM_IP }}
         username: ${{ secrets.MONITORING_VM_USER }}

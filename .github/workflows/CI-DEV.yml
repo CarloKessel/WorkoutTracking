@@ -101,7 +101,7 @@ jobs:
         printf 'Netlab Fontys ICT\n${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}\n' | sudo openconnect vpnnetlab.fhict.nl -b
     
     - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@v1.2.0
       with:
         host: ${{ secrets.KUBE_VM_IP }}
         username: ${{ secrets.KUBE_VM_USER }}
